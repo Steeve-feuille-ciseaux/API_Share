@@ -1,4 +1,3 @@
-- résoudre endpoint, name=xxx
-- résoudre la dernière étape du test
+- résoudre la dernière étape du test *en cours dans via le controller*
 - intégration html 
 - mettre une image

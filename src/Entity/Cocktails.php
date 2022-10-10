@@ -2,31 +2,37 @@
 
 namespace App\Entity;
 
-use App\Repository\CocktailsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
-
 use ApiPlatform\Metadata\ApiFilter;
+
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use App\Repository\CocktailsRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource(
-    normalizationContext:["groups" => ["cocktails:read"]],
-)]
-#[ApiFilter(SearchFilter::class, properties: ['name' => 'exact'])]
 #[ORM\Entity(repositoryClass: CocktailsRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(),
+    ]
+)]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial'])]
 class Cocktails
 {
-    #[Groups(["cocktails:read"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["cocktails:read"])]
     #[ORM\Column(length: 255)]
+    #[Groups(['read:ingredients'])]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Ingredients::class, mappedBy: 'cocktails')]

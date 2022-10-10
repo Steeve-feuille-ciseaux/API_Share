@@ -2,12 +2,10 @@
 
 namespace App\Entity;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
-
 use ApiPlatform\Metadata\ApiFilter;
+
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\GetCollection;
 use App\Repository\IngredientsRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,18 +14,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Metadata\CollectionOperationInterface;
 
 #[ORM\Entity(repositoryClass: IngredientsRepository::class)]
+// SOLUCE DEBUT
+#[ApiResource(routePrefix: '/cocktails')]
 #[ApiResource(
-    normalizationContext:[
-        'groups' => ['read:ingredients']
-    ],
     operations: [
-        new Get(),
-        new GetCollection(),
         new Get(
             uriTemplate: '/cocktails/ingredients/{id}',),
-        new Post()
     ]
 )]
+// SOLUCE FIN
 #[ApiFilter(SearchFilter::class, properties: ['name' => 'partial'])]
 class Ingredients
 {
@@ -37,11 +32,10 @@ class Ingredients
     private ?int $id = null;
     
     #[ORM\Column(length: 255)]
-    #[Groups(['read:ingredients'])]
+    #[Groups(['read:collection'])]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Cocktails::class, inversedBy: 'ingredients')]
-    #[Groups(['read:ingredients'])]
     private Collection $cocktails;
 
     public function __construct()
